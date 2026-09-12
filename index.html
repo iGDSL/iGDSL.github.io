@@ -1,5 +1,544 @@
 <!DOCTYPE html>
-<html>
-<head><title>iGDSL</title></head>
-<body><h1>Hello iGDSL!</h1></body>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iGDSL — GeoAI로 읽는 지구</title>
+<meta name="description" content="국립부경대학교 지능형 공간데이터과학 연구실(iGDSL). 위성·무인기 데이터와 인공지능의 결합으로 지구환경을 분석하고 예측합니다.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  :root{
+    --bg: #ffffff;
+    --bg-tint: #f2f7f9;
+    --ink: #0b2436;
+    --slate: #4c6577;
+    --slate-light: #7c92a1;
+    --cyan: #0089a8;
+    --cyan-deep: #036780;
+    --line: #dfe8ec;
+    --line-strong: #c7d5db;
+    --radius: 8px;
+    --maxw: 1320px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ animation: none !important; transition: none !important; }
+  }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.65;
+    font-size: 18px;
+  }
+
+  a{ color: inherit; }
+  img{ max-width: 100%; display:block; }
+
+  .wrap{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  header{
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .headbar{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    gap: 24px;
+  }
+  .brand{
+    display:flex;
+    align-items:baseline;
+    gap: 12px;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .brand small{
+    font-weight: 500;
+    color: var(--slate);
+    font-size: 14px;
+  }
+  nav.quicknav{
+    display:flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  nav.quicknav::-webkit-scrollbar{ display:none; }
+  nav.quicknav a{
+    flex: 0 0 auto;
+    text-decoration: none;
+    color: var(--slate);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 100px;
+    border: 1px solid transparent;
+    transition: color .15s, border-color .15s, background .15s;
+  }
+  nav.quicknav a:hover{
+    color: var(--cyan-deep);
+    background: var(--bg-tint);
+    border-color: var(--line);
+  }
+  nav.quicknav a .num{
+    color: var(--cyan);
+    font-weight: 700;
+    margin-right: 7px;
+  }
+
+  .hero{
+    position: relative;
+    padding: 130px 0 110px;
+    overflow: hidden;
+    text-align: center;
+    background:
+      radial-gradient(680px 420px at 50% 0%, rgba(0,137,168,0.09), rgba(0,137,168,0) 70%),
+      var(--bg);
+  }
+  .orbit{
+    position:absolute;
+    top: 44%;
+    left: 50%;
+    width: 980px;
+    height: 980px;
+    margin-left: -490px;
+    margin-top: -490px;
+    border: 1px solid rgba(0,137,168,0.16);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .orbit.o2{
+    width: 700px; height: 700px; margin-left:-350px; margin-top:-350px;
+    border-color: rgba(0,137,168,0.11);
+  }
+  .orbit .sat{
+    position:absolute;
+    top: -4px;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    margin-left: -4px;
+    background: var(--cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 14px 3px rgba(0,137,168,0.35);
+    animation: spin 22s linear infinite;
+    transform-origin: 4px 494px;
+  }
+  .orbit.o2 .sat{
+    animation-duration: 15s;
+    animation-direction: reverse;
+    transform-origin: 4px 354px;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+
+  .hero-inner{ position:relative; z-index:2; }
+  .eyebrow-lab{
+    display:inline-block;
+    color: var(--cyan-deep);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin-bottom: 26px;
+  }
+  h1.title{
+    font-size: clamp(44px, 7vw, 84px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 26px;
+    line-height: 1.12;
+  }
+  h1.title .accent{ color: var(--cyan); }
+  .hero p.sub{
+    max-width: 700px;
+    margin: 0 auto;
+    color: var(--slate);
+    font-size: 20px;
+  }
+  .hero .cta{
+    margin-top: 46px;
+    display:inline-flex;
+    align-items:center;
+    gap: 12px;
+    font-size: 15px;
+    color: var(--slate);
+  }
+  .hero .cta .down{
+    width: 30px; height: 30px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    animation: bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform: translateY(0); }
+    50%{ transform: translateY(4px); }
+  }
+
+  .overview{
+    padding: 100px 0 70px;
+    border-top: 1px solid var(--line);
+  }
+  .section-head{
+    max-width: 700px;
+    margin-bottom: 48px;
+  }
+  .section-head h2{
+    font-size: clamp(30px, 3.8vw, 42px);
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    margin: 0 0 16px;
+  }
+  .section-head p{
+    color: var(--slate);
+    font-size: 18px;
+    margin: 0;
+    max-width: 60ch;
+  }
+  .overview-frame{
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-tint);
+  }
+  .overview-frame img{ width: 100%; }
+  .overview-legend{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    margin-top: 1px;
+    border: 1px solid var(--line-strong);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    overflow:hidden;
+  }
+  .overview-legend a{
+    text-decoration:none;
+    background: #fff;
+    padding: 18px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--slate);
+    display:flex;
+    gap:8px;
+    align-items:baseline;
+  }
+  .overview-legend a:hover{ color: var(--cyan-deep); background: var(--bg-tint); }
+  .overview-legend .n{ color: var(--cyan); font-weight:700; }
+
+  .research{ padding: 10px 0; }
+  .item{
+    padding: 84px 0;
+    border-top: 1px solid var(--line);
+    scroll-margin-top: 100px;
+  }
+  .item:last-child{ border-bottom: 1px solid var(--line); }
+
+  .item-head{
+    display:flex;
+    gap: 32px;
+    align-items:flex-start;
+    margin-bottom: 36px;
+  }
+  .copy .num{
+    font-size: 64px;
+    font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 1.6px var(--cyan);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    flex: 0 0 auto;
+    min-width: 96px;
+  }
+  .copy h3{
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    margin: 6px 0 16px;
+    letter-spacing: -0.01em;
+  }
+  .copy p.desc{
+    color: var(--slate);
+    font-size: 18px;
+    margin: 0 0 22px;
+    max-width: 74ch;
+  }
+  .tags{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .tags span{
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cyan-deep);
+    background: var(--bg-tint);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 7px 14px;
+  }
+  .figure{
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-tint);
+  }
+  .figure img{ width: 100%; }
+
+  @media (max-width: 720px){
+    body{ font-size: 16.5px; }
+    .wrap{ padding: 0 22px; }
+    .headbar{ flex-direction: column; align-items: flex-start; gap: 14px; padding: 16px 22px; }
+    nav.quicknav{ width: 100%; }
+    .hero{ padding: 96px 0 70px; }
+    .overview-legend{ grid-template-columns: repeat(2, 1fr); }
+    .item{ padding: 56px 0; }
+    .item-head{ flex-direction: column; gap: 10px; }
+    .copy .num{ min-width: auto; }
+  }
+
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 64px 0 46px;
+    background: var(--bg-tint);
+  }
+  .foot-grid{
+    display:flex;
+    justify-content: space-between;
+    align-items:flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .foot-brand{
+    font-weight: 800;
+    font-size: 19px;
+  }
+  .foot-brand span{ color: var(--cyan); }
+  .foot-meta{
+    color: var(--slate);
+    font-size: 15px;
+    max-width: 48ch;
+    margin-top: 10px;
+  }
+  .foot-links{
+    display:flex;
+    gap: 24px;
+    font-size: 15px;
+  }
+  .foot-links a{
+    color: var(--slate);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  .foot-links a:hover{ color: var(--cyan-deep); border-color: var(--line-strong); }
+  .copyright{
+    margin-top: 38px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line-strong);
+    color: var(--slate-light);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="headbar">
+    <div class="brand">iGDSL <small>Intelligent Geospatial Data Science Lab</small></div>
+    <nav class="quicknav">
+      <a href="#s1"><span class="num">01</span>산출</a>
+      <a href="#s2"><span class="num">02</span>예측</a>
+      <a href="#s3"><span class="num">03</span>향상</a>
+      <a href="#s4"><span class="num">04</span>추적</a>
+      <a href="#s5"><span class="num">05</span>탐지</a>
+      <a href="#s6"><span class="num">06</span>생성</a>
+      <a href="#s7"><span class="num">07</span>무인기</a>
+      <a href="#s8"><span class="num">08</span>모델</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="orbit"><div class="sat"></div></div>
+  <div class="orbit o2"><div class="sat"></div></div>
+  <div class="wrap hero-inner">
+    <div class="eyebrow-lab">국립부경대학교 지능형 공간데이터과학 연구실</div>
+    <h1 class="title">Geo<span class="accent">AI</span>로 읽는 지구</h1>
+    <p class="sub">위성과 무인기가 관측한 신호를 인공지능으로 해석해 해빙·해양·도시환경의 지금과 다음을 읽습니다.</p>
+    <div class="cta">
+      <span>연구 여덟 갈래 보기</span>
+      <span class="down">↓</span>
+    </div>
+  </div>
+</section>
+
+<section class="overview">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>공간데이터와 인공지능의 결합</h2>
+      <p>위성·무인기 데이터와 인공지능을 결합해 지구환경을 분석하고, 관측이 닿지 않는 시간과 공간의 빈틈을 채워 의사결정을 지원합니다.</p>
+    </div>
+    <div class="overview-frame">
+      <img src="images/overview.jpg" alt="GeoAI로 읽는 지구 — 연구실 전체 연구 개요 다이어그램" loading="lazy">
+    </div>
+    <div class="overview-legend">
+      <a href="#s1"><span class="n">01</span>위성정보 산출</a>
+      <a href="#s2"><span class="n">02</span>시공간 변화 예측</a>
+      <a href="#s3"><span class="n">03</span>위성영상 품질 향상</a>
+      <a href="#s4"><span class="n">04</span>매칭·정합·이동 추적</a>
+      <a href="#s5"><span class="n">05</span>변화탐지</a>
+      <a href="#s6"><span class="n">06</span>학습영상 생성</a>
+      <a href="#s7"><span class="n">07</span>다종센서 무인기 활용</a>
+      <a href="#s8"><span class="n">08</span>위성 파운데이션 모델</a>
+    </div>
+  </div>
+</section>
+
+<section class="research">
+  <div class="wrap">
+
+    <article class="item" id="s1">
+      <div class="item-head">
+        <div class="copy"><div class="num">01</div></div>
+        <div class="copy">
+          <h3>위성정보 산출</h3>
+          <p class="desc">위성이 관측한 신호를 지구환경 정보로 바꿉니다. 광학·SAR·수동마이크로파 관측자료를 GeoAI로 분류하고 물리량을 추정해 얼음과 바다를 구분하고, 해빙의 농도와 두께, 해양환경 정보를 산출합니다.</p>
+          <div class="tags"><span>위성 원시자료의 정보화</span><span>해빙·해양환경 모니터링</span></div>
+        </div>
+      </div>
+      <div class="figure"><img src="images/01-retrieval.jpg" alt="위성정보 산출 다이어그램: 광학·SAR·수동마이크로파 관측자료를 GeoAI로 분석해 얼음과 바다 구분, 해빙 농도·두께, 해양환경 정보를 산출" loading="lazy"></div>
+    </article>
+
+    <article class="item" id="s2">
+      <div class="item-head">
+        <div class="copy"><div class="num">02</div></div>
+        <div class="copy">
+          <h3>시공간 변화 예측</h3>
+          <p class="desc">시간에 따른 변화를 학습해 미래의 공간 분포를 예측합니다. 해빙·해양·대기 등 다변량 시계열 자료로 변화 패턴을 학습하고, 해빙 분포를 예측해 북극항로의 항로 주변 위험 검토와 의사결정을 지원합니다.</p>
+          <div class="tags"><span>시계열 학습과 공간 분포 예측</span><span>해빙·해양환경 변화와 항로 활용</span></div>
+        </div>
+      </div>
+      <div class="figure"><img src="images/02-forecast.jpg" alt="시공간 변화 예측 다이어그램: 과거 관측을 학습해 해빙 분포를 미래 예측하고 북극항로 의사결정을 지원" loading="lazy"></div>
+    </article>
+
+    <article class="item" id="s3">
+      <div class="item-head">
+        <div class="copy"><div class="num">03</div></div>
+        <div class="copy">
+          <h3>위성영상 품질 향상</h3>
+          <p class="desc">비어 있는 정보를 복원하고 흐릿한 공간 구조를 선명하게 합니다. 구름으로 가려진 영역은 다른 시점의 관측으로 복원하고, 저해상도 영상은 GOCI-II 등 다중위성의 참조 공간정보를 활용해 세밀하게 초해상화합니다.</p>
+          <div class="tags"><span>결측복원</span><span>참조정보 기반 초해상화</span></div>
+        </div>
+      </div>
+      <div class="figure"><img src="images/03-enhancement.jpg" alt="위성영상 품질 향상 다이어그램: 구름 가림 영역의 결측복원과 저해상도 영상의 초해상화" loading="lazy"></div>
+    </article>
+
+    <article class="item" id="s4">
+      <div class="item-head">
+        <div class="copy"><div class="num">04</div></div>
+        <div class="copy">
+          <h3>매칭·정합·이동 추적</h3>
+          <p class="desc">서로 다른 영상 속 같은 대상을 찾아 위치와 움직임을 연결합니다. 광학·SAR처럼 서로 다른 센서의 영상을 같은 위치로 정밀 정합하고, 해빙의 이동을 시점 간 추적해 이동벡터 기반의 우회 항로를 판단합니다.</p>
+          <div class="tags"><span>센서 차이를 넘는 대응점 탐색</span><span>해빙 이동 추적과 항로 의사결정 지원</span></div>
+        </div>
+      </div>
+      <div class="figure"><img src="images/04-matching.jpg" alt="매칭·정합·이동 추적 다이어그램: 이종센서 영상 정합과 해빙 이동 추적" loading="lazy"></div>
+    </article>
+
+    <article class="item" id="s5">
+      <div class="item-head">
+        <div class="copy"><div class="num">05</div></div>
+        <div class="copy">
+          <h3>변화탐지</h3>
+          <p class="desc">같은 장소의 영상을 비교하여 달라진 지표와 건물을 찾아냅니다. 변화 전·후 영상에서 새로 생긴 건물과 사라진 건물을 자동으로 구분해, 도시 변화 모니터링과 지도 갱신을 지원합니다.</p>
+          <div class="tags"><span>다시점 촬영한 영상의 변화 비교</span><span>건물 변화탐지와 지도 갱신 지원</span></div>
+        </div>
+      </div>
+      <div class="figure"><img src="images/05-changedetect.jpg" alt="변화탐지 다이어그램: 변화 전·변화 후 영상을 비교해 신축·철거 건물을 탐지" loading="lazy"></div>
+    </article>
+
+    <article class="item" id="s6">
+      <div class="item-head">
+        <div class="copy"><div class="num">06</div></div>
+        <div class="copy">
+          <h3>학습영상 생성</h3>
+          <p class="desc">변화 조건에 맞는 영상을 만들어 AI 학습데이터를 확장합니다. 신축·철거·갱신 등 변화 위치와 유형 조건은 유지한 채, 계절과 촬영 조건이 다른 영상을 생성형 GeoAI로 만들어 부족한 변화탐지 학습자료를 보완합니다.</p>
+          <div class="tags"><span>조건을 반영한 위성·항공영상 생성</span><span>부족한 변화탐지 학습자료 보완</span></div>
+        </div>
+      </div>
+      <div class="figure"><img src="images/06-generation.jpg" alt="학습영상 생성 다이어그램: 변화 위치·유형 조건을 유지한 채 계절이 다른 영상을 생성형 GeoAI로 생성" loading="lazy"></div>
+    </article>
+
+    <article class="item" id="s7">
+      <div class="item-head">
+        <div class="copy"><div class="num">07</div></div>
+        <div class="copy">
+          <h3>다종센서 무인기 활용</h3>
+          <p class="desc">초분광과 LiDAR로 현장의 물질과 입체 구조를 살펴봅니다. 무인기로 정밀 관측한 초분광 영상의 물질별 빛 반사 특성과 LiDAR 점군의 높이·형상 정보를 결합해, 해안 쓰레기를 탐지하고 분광라이브러리를 구축합니다.</p>
+          <div class="tags"><span>초분광·LiDAR 관측정보 결합</span><span>현장 환경조사와 물질 특성 분석</span></div>
+        </div>
+      </div>
+      <div class="figure"><img src="images/07-uav.jpg" alt="다종센서 무인기 활용 다이어그램: 초분광 영상과 LiDAR 점군을 결합한 해안 쓰레기 탐지와 분광라이브러리 구축" loading="lazy"></div>
+    </article>
+
+    <article class="item" id="s8">
+      <div class="item-head">
+        <div class="copy"><div class="num">08</div></div>
+        <div class="copy">
+          <h3>위성 파운데이션 모델</h3>
+          <p class="desc">공통 표현을 학습하고 다양한 분석·예측 과제에 재사용합니다. 위성·기후모델 등 다양한 지구관측 자료로 공통 표현을 사전학습한 뒤, 분류·예측·복원 등 과제별로 맞춤 학습해 해빙 모델과 후속 연구로 확장합니다.</p>
+          <div class="tags"><span>사전학습과 관측자료 적응</span><span>재사용 가능한 공간표현 연구</span></div>
+        </div>
+      </div>
+      <div class="figure"><img src="images/08-foundation.jpg" alt="위성 파운데이션 모델 다이어그램: 다양한 지구관측 자료로 공통 표현을 사전학습하고 과제별로 맞춤 학습" loading="lazy"></div>
+    </article>
+
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">iGDSL <span>· GeoAI</span></div>
+        <div class="foot-meta">국립부경대학교 지능형 공간데이터과학 연구실 — 위성·무인기 데이터와 인공지능의 결합으로 지구환경 분석과 의사결정을 지원합니다.</div>
+      </div>
+      <div class="foot-links">
+        <a href="#s1">연구 소개</a>
+        <a href="mailto:lab@example.ac.kr">연락하기</a>
+        <a href="https://github.com/iGDSL" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year"></span> Intelligent Geospatial Data Science Lab, Pukyong National University.</div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
 </html>
