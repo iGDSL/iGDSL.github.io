@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>소식 — iGDSL 지능형 공간데이터과학 연구실</title>
+<meta name="description" content="iGDSL 연구실 소식 — 학회 발표, 수상, 구성원 합류와 과정 시작 소식.">
+<link rel="icon" href="images/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="images/favicon-180.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site"></header>
+
+<section class="pagehead">
+  <div class="wrap">
+    <div class="eyebrow">News</div>
+    <h1>소식</h1>
+    <p>학회 발표, 수상, 새로운 구성원의 합류 등 연구실에서 있었던 일들입니다.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="filterbar" id="newsfilters"></div>
+    <div id="newslist"></div>
+  </div>
+</section>
+
+<footer class="site"></footer>
+
+<script src="assets/site.js"></script>
+<script src="assets/news-data.js"></script>
+<script>
+(function(){
+  const box     = document.getElementById('newslist');
+  const filters = document.getElementById('newsfilters');
+  let active = 'all';
+
+  /* 실제로 쓰인 분류만 버튼으로 만듭니다 */
+  const used = new Set();
+  NEWS.forEach(y => y.items.forEach(it => used.add(it.cat)));
+
+  filters.innerHTML =
+    `<button class="on" data-f="all">전체</button>` +
+    Object.keys(NEWS_CATS).filter(k => used.has(k))
+      .map(k => `<button data-f="${k}">${NEWS_CATS[k]}</button>`).join('');
+
+  filters.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if(!b) return;
+    filters.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    active = b.dataset.f;
+    draw();
+  });
+
+  function draw(){
+    box.innerHTML = NEWS.map(y => {
+      const rows = y.items.filter(it => active === 'all' || it.cat === active);
+      if(!rows.length) return '';
+      return `
+        <div class="pub-year"><b>${y.year}</b><i></i></div>
+        <ul class="news-list">
+          ${rows.map(it => `
+            <li>
+              <span class="d">${it.date}</span>
+              <span class="x">
+                <span class="badge ${it.cat}">${NEWS_CATS[it.cat]}</span>${it.text}
+                ${it.who ? `<span class="who">${it.who}</span>` : ''}
+              </span>
+            </li>`).join('')}
+        </ul>`;
+    }).join('') || '<p class="lead">해당하는 소식이 없습니다.</p>';
+  }
+
+  draw();
+})();
+</script>
+</body>
+</html>

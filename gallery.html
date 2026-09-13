@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>갤러리 — iGDSL 지능형 공간데이터과학 연구실</title>
+<meta name="description" content="iGDSL 연구실 활동 사진 — 학회 참가, 현장조사, 워크숍, 수상 등 행사 기록.">
+<link rel="icon" href="images/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="images/favicon-180.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site"></header>
+
+<section class="pagehead">
+  <div class="wrap">
+    <div class="eyebrow">Gallery</div>
+    <h1>갤러리</h1>
+    <p>학회 참가, 현장조사, 워크숍과 수상 — 연구실이 함께한 순간들의 기록입니다.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+
+    <!-- 촬영 위치 (place 가 있는 사진이 하나라도 있을 때만 표시) -->
+    <div id="galmapbox" hidden>
+      <div class="mapbar">
+        <span class="mt">촬영 위치</span>
+        <span class="ms" id="galmapcount"></span>
+      </div>
+      <div class="placemap">
+        <div class="placelist" id="placelist"></div>
+        <div class="map-frame">
+          <iframe id="placeframe" title="촬영 위치 위성지도" loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="filterbar" id="galfilters"></div>
+    <div id="galbox"></div>
+  </div>
+</section>
+
+<footer class="site"></footer>
+
+<script src="assets/site.js"></script>
+<script src="gallery/places.js"></script>
+<script src="gallery/gallery-data.js"></script>
+<script>
+(function(){
+  const box     = document.getElementById('galbox');
+  const filters = document.getElementById('galfilters');
+
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const src = f => 'gallery/photos/' + f;
+
+  // 최신순 정렬
+  const items = [...GALLERY].sort((a,b) => String(b.date).localeCompare(String(a.date)));
+  let shown = items;
+
+  /* ---------- 빈 상태 ---------- */
+  if(items.length === 0){
+    filters.style.display = 'none';
+    box.innerHTML = `
+      <div class="gal-empty">
+        <p style="margin:0 0 14px;font-size:20px;font-weight:700;color:var(--navy-deep)">아직 등록된 사진이 없습니다.</p>
+        <p style="margin:0">사진 파일을 <code>gallery/photos/</code> 폴더에 넣고,<br>
+        <code>gallery/gallery-data.js</code> 파일에 한 줄 추가하면 이곳에 자동으로 표시됩니다.</p>
+      </div>`;
+    return;
+  }
+
+  /* ---------- 크게 보기 (공용 라이트박스) ---------- */
+  const toSlide = it => ({
+    src:   src(it.file),
+    title: it.title,
+    desc:  [it.date, it.album, it.place, it.desc].filter(Boolean).join(' · ')
+  });
+  function openIn(list, i){ Lightbox.open(list.map(toSlide), i); }
+
+  /* ---------- 필터 ---------- */
+  const albums = [...new Set(items.map(i => i.album).filter(Boolean))];
+  filters.innerHTML =
+    `<button class="on" data-f="all">전체</button>` +
+    albums.map(a => `<button data-f="${esc(a)}">${esc(a)}</button>`).join('');
+  if(albums.length === 0) filters.style.display = 'none';
+
+  filters.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if(!b) return;
+    filters.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    shown = b.dataset.f === 'all' ? items : items.filter(i => i.album === b.dataset.f);
+    draw();
+  });
+
+  /* ---------- 그리드 ---------- */
+  function draw(){
+    box.innerHTML = `<div class="gal-grid">` + shown.map((it, i) => `
+      <figure class="gal-item" data-i="${i}" tabindex="0" role="button" aria-label="${esc(it.title)} 크게 보기" style="margin:0">
+        <div class="gal-thumb" style="background-image:url('${src(it.file)}');background-position:${esc(it.pos || 'center')}"></div>
+        <figcaption class="gal-cap">
+          <div class="dt">${esc(it.date)}${it.album ? ' · ' + esc(it.album) : ''}</div>
+          <div class="ti">${esc(it.title)}</div>
+          ${it.desc ? `<div class="ds">${esc(it.desc)}</div>` : ''}
+          ${it.place ? `<div class="pl">${esc(it.place)}</div>` : ''}
+        </figcaption>
+      </figure>`).join('') + `</div>`;
+  }
+
+  box.addEventListener('click', e => {
+    const c = e.target.closest('.gal-item');
+    if(c) openIn(shown, +c.dataset.i);
+  });
+  box.addEventListener('keydown', e => {
+    if(e.key !== 'Enter' && e.key !== ' ') return;
+    const c = e.target.closest('.gal-item');
+    if(c){ e.preventDefault(); openIn(shown, +c.dataset.i); }
+  });
+
+  draw();
+
+  /* ---------- 촬영 위치 (Google 위성지도) ----------
+     좌표는 loc 이 있으면 그대로 쓰고, 없으면 place 이름을
+     places.js(지오코딩 캐시)에서 찾습니다. 둘 다 없으면 지도에 안 나옵니다.
+
+     지도는 API 키가 필요 없는 Google 지도 임베드를 씁니다.
+       t=k  위성          t=h  위성 + 지명/도로 라벨
+       t=m  일반 지도      t=p  지형
+     라벨 없는 순수 위성이 좋으면 아래 MAP_TYPE 을 'k' 로 바꾸세요. */
+  const MAP_TYPE = 'h';
+  const ZOOM_DEFAULT = 15;
+
+  const dict = (typeof PLACES !== 'undefined') ? PLACES : {};
+  const coordOf = it => {
+    if(Array.isArray(it.loc) && it.loc.length === 2) return it.loc;
+    if(it.place && Array.isArray(dict[it.place])) return dict[it.place];
+    return null;
+  };
+
+  const geo = items.filter(it => coordOf(it));
+  if(geo.length === 0) return;
+
+  const missing = items.filter(it => it.place && !coordOf(it)).map(it => it.place);
+  if(missing.length) console.warn('좌표를 모르는 장소:', [...new Set(missing)].join(', '),
+    '— python3 tools/geocode.py 를 실행하세요.');
+
+  // 같은 장소끼리 묶기 (place 이름 기준, 없으면 좌표 기준)
+  const groups = [];
+  const byKey = new Map();
+  geo.forEach(it => {
+    const loc = coordOf(it);
+    const key = it.place || loc.join(',');
+    if(!byKey.has(key)){
+      const g = { place: it.place || it.title, loc, zoom: it.zoom || ZOOM_DEFAULT, list: [] };
+      byKey.set(key, g);
+      groups.push(g);
+    }
+    byKey.get(key).list.push(it);
+  });
+
+  const mapUrl = g =>
+    `https://maps.google.com/maps?q=${g.loc[0]},${g.loc[1]}&t=${MAP_TYPE}&z=${g.zoom}&hl=ko&output=embed`;
+  const linkUrl = g =>
+    `https://www.google.com/maps/search/?api=1&query=${g.loc[0]},${g.loc[1]}`;
+
+  document.getElementById('galmapbox').hidden = false;
+  document.getElementById('galmapcount').textContent = `${groups.length}곳 · 사진 ${geo.length}장`;
+
+  const listEl  = document.getElementById('placelist');
+  const frameEl = document.getElementById('placeframe');
+
+  listEl.innerHTML = groups.map((g, i) => `
+    <button class="placeitem${i === 0 ? ' on' : ''}" data-i="${i}" type="button">
+      <span class="pthumb" style="background-image:url('${src(g.list[0].file)}')"></span>
+      <span class="pbody">
+        <span class="pname">${esc(g.place)}</span>
+        <span class="pmeta">${esc(g.list[0].date)} · 사진 ${g.list.length}장</span>
+      </span>
+    </button>`).join('') + `
+    <div class="placefoot">
+      <button class="pshow" type="button">이 장소 사진 보기</button>
+      <a class="popen" target="_blank" rel="noopener">Google 지도에서 열기</a>
+    </div>`;
+
+  let current = 0;
+  const footLink = listEl.querySelector('.popen');
+
+  function select(i){
+    current = i;
+    listEl.querySelectorAll('.placeitem').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+    frameEl.src = mapUrl(groups[i]);
+    frameEl.title = groups[i].place + ' 위성지도';
+    footLink.href = linkUrl(groups[i]);
+  }
+
+  listEl.addEventListener('click', e => {
+    const b = e.target.closest('.placeitem');
+    if(b) select(+b.dataset.i);
+  });
+  listEl.querySelector('.pshow').addEventListener('click', () => openIn(groups[current].list, 0));
+
+  select(0);
+})();
+</script>
+</body>
+</html>

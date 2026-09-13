@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>논문 — iGDSL 지능형 공간데이터과학 연구실</title>
+<meta name="description" content="iGDSL 연구 논문 목록 — 국제·국내 학술지 게재 논문.">
+<link rel="icon" href="images/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="images/favicon-180.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site"></header>
+
+<section class="pagehead">
+  <div class="wrap">
+    <div class="eyebrow">Publications</div>
+    <h1>논문</h1>
+    <p id="pubcount"></p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+
+    <!-- 연구 키워드 — 논문 제목에서 그 자리에서 계산해 그립니다 -->
+    <figure class="kwcloud">
+      <div class="kwcanvas" id="kwcloudbox"></div>
+      <figcaption>
+        논문 <b id="kwn"></b>편에 지정한 연구 키워드 — 글자 크기는 그 키워드가 달린 논문 수입니다.
+        키워드를 누르면 해당 논문만 볼 수 있습니다.
+      </figcaption>
+    </figure>
+
+    <div class="filterbar" id="filters">
+      <button class="on" data-f="all">전체</button>
+      <button data-f="intl">국제학술지</button>
+      <button data-f="dom">국내학술지</button>
+      <span class="kwactive" id="kwactive" hidden></span>
+    </div>
+
+    <div id="publist"></div>
+  </div>
+</section>
+
+<footer class="site"></footer>
+
+<script src="assets/site.js"></script>
+<script src="assets/pubs-data.js"></script>
+<script>
+(function(){
+  const list     = document.getElementById('publist');
+  const count    = document.getElementById('pubcount');
+  const cloudEl  = document.getElementById('kwcloudbox');
+  const activeEl = document.getElementById('kwactive');
+
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const FONT = "'Pretendard', -apple-system, 'Malgun Gothic', sans-serif";
+
+  let typeFilter = 'all';
+  let kwFilter   = null;
+
+  /* ---------- 논문별 kw 를 모아 빈도 계산 ---------- */
+  const tally = new Map();
+  PUBS.forEach(p => (p.kw || []).forEach(k => tally.set(k, (tally.get(k) || 0) + 1)));
+  const counted = [...tally].map(([label, n]) => ({ label, n }))
+                            .sort((a, b) => b.n - a.n || a.label.localeCompare(b.label));
+
+  const maxN = counted.length ? counted[0].n : 1;
+  const minN = counted.length ? counted[counted.length - 1].n : 1;
+
+  /* ---------- 나선형 배치로 키워드 구름 그리기 ----------
+     가운데부터 나선을 그리며 빈자리를 찾아 단어를 놓습니다.
+     좌표는 가상 캔버스(1000 단위) 기준이고 SVG viewBox 로 화면에 맞춰 늘어납니다. */
+  const measure = (() => {
+    const ctx = document.createElement('canvas').getContext('2d');
+    return (text, size) => { ctx.font = `800 ${size}px ${FONT}`; return ctx.measureText(text).width; };
+  })();
+
+  function pack(words, W, H){
+    const placed = [], out = [];
+    const cx = W / 2, cy = H / 2;
+    const stretch = W / H;                       // 가로로 넓으면 나선도 넓게
+
+    for(const w of words){
+      const tw = measure(w.label, w.size), th = w.size * 0.80;
+      const bw = w.rot ? th : tw, bh = w.rot ? tw : th;
+      const pad = Math.max(2, w.size * 0.10);
+      let hit = null;
+
+      for(let t = 0; t < 12000; t++){
+        const ang = t * 0.20;
+        const rad = 0.62 * ang;
+        const x = cx + rad * Math.cos(ang) * stretch;
+        const y = cy + rad * Math.sin(ang);
+        const r = { x: x - bw/2 - pad, y: y - bh/2 - pad, w: bw + pad*2, h: bh + pad*2 };
+        if(r.x < 0 || r.y < 0 || r.x + r.w > W || r.y + r.h > H) continue;
+        if(placed.some(q => r.x < q.x+q.w && q.x < r.x+r.w && r.y < q.y+q.h && q.y < r.y+r.h)) continue;
+        placed.push(r); hit = { x, y }; break;
+      }
+      if(hit) out.push({ ...w, x: hit.x, y: hit.y, bw, bh });
+    }
+    return out;
+  }
+
+  function drawCloud(){
+    const small = window.matchMedia('(max-width: 760px)').matches;
+    const pool  = small ? counted.slice(0, 18) : counted;
+
+    // 크기: 편수의 제곱근에 비례 (면적이 편수에 가깝게 느껴지도록)
+    const sz = n => {
+      const r = maxN === minN ? 1 : (Math.sqrt(n) - Math.sqrt(minN)) / (Math.sqrt(maxN) - Math.sqrt(minN));
+      return small ? 23 + r * 40 : 19 + r * 52;
+    };
+    // 다섯 번째마다 세로로 세워 배치에 변화를 줍니다
+    const words = pool.map((k, i) => ({ ...k, size: sz(k.n), rot: !small && i % 5 === 3 }));
+
+    const W = 1000;
+    let H = small ? 560 : 372, laid = [];
+    for(let tryH = 0; tryH < 4; tryH++){           // 다 못 놓으면 높이를 늘려 다시
+      laid = pack(words, W, H);
+      if(laid.length === words.length) break;
+      H = Math.round(H * 1.12);
+    }
+
+    const shade = n => {
+      const r = maxN === minN ? 1 : (n - minN) / (maxN - minN);
+      return Math.min(5, Math.round((1 - r) * 5));
+    };
+
+    // 실제로 놓인 단어들의 범위에 맞춰 여백을 잘라냅니다
+    const M = 6;
+    const x0 = Math.min(...laid.map(w => w.x - w.bw/2)) - M;
+    const x1 = Math.max(...laid.map(w => w.x + w.bw/2)) + M;
+    const y0 = Math.min(...laid.map(w => w.y - w.bh/2)) - M;
+    const y1 = Math.max(...laid.map(w => w.y + w.bh/2)) + M;
+    const vb = `${x0.toFixed(1)} ${y0.toFixed(1)} ${(x1-x0).toFixed(1)} ${(y1-y0).toFixed(1)}`;
+
+    cloudEl.innerHTML = `
+      <svg viewBox="${vb}" width="100%" height="auto" class="kwsvg"
+           role="group" aria-label="연구 키워드">
+        ${laid.map(w => `
+          <text class="kwtag s${shade(w.n)}${w.label === kwFilter ? ' on' : ''}"
+                data-k="${esc(w.label)}"
+                x="${w.x.toFixed(1)}" y="${w.y.toFixed(1)}"
+                font-size="${w.size.toFixed(1)}"
+                text-anchor="middle" dominant-baseline="central"
+                ${w.rot ? `transform="rotate(-90 ${w.x.toFixed(1)} ${w.y.toFixed(1)})"` : ''}
+                tabindex="0" role="button"
+                aria-label="${esc(w.label)} — 논문 ${w.n}편">${esc(w.label)}<title>${esc(w.label)} — 논문 ${w.n}편</title></text>`).join('')}
+      </svg>`;
+  }
+
+  /* ---------- 논문 목록 ---------- */
+  function render(){
+    let rows = PUBS.filter(p => typeFilter === 'all' || p.type === typeFilter);
+    if(kwFilter) rows = rows.filter(p => (p.kw || []).includes(kwFilter));
+
+    let n = rows.length, html = '', lastYear = null;
+    rows.forEach(p => {
+      if(p.year !== lastYear){
+        if(lastYear !== null) html += '</ol>';
+        html += `<div class="pub-year"><b>${p.year}</b><i></i></div><ol class="pubs">`;
+        lastYear = p.year;
+      }
+      const title = p.doi
+        ? `<a class="t" href="${p.doi}" target="_blank" rel="noopener">${esc(p.title)}</a>`
+        : `<span class="t">${esc(p.title)}</span>`;
+      html += `<li data-n="${n--}">${esc(p.authors)}, "${title}," <span class="v">${esc(p.venue)}</span>${p.detail ? ', ' + esc(p.detail) : ''}.</li>`;
+    });
+    if(lastYear !== null) html += '</ol>';
+    list.innerHTML = html || '<p class="lead">해당하는 논문이 없습니다.</p>';
+
+    if(kwFilter){
+      activeEl.hidden = false;
+      activeEl.innerHTML = `<span>키워드 <b>${esc(kwFilter)}</b> · ${rows.length}편</span>` +
+                           `<button type="button" aria-label="키워드 해제">✕</button>`;
+    } else {
+      activeEl.hidden = true;
+      activeEl.innerHTML = '';
+    }
+    cloudEl.querySelectorAll('.kwtag').forEach(t =>
+      t.classList.toggle('on', t.dataset.k === kwFilter));
+  }
+
+  function toggleKw(k){ kwFilter = (kwFilter === k) ? null : k; render(); }
+
+  /* ---------- 이벤트 ---------- */
+  cloudEl.addEventListener('click', e => {
+    const t = e.target.closest('.kwtag');
+    if(t) toggleKw(t.dataset.k);
+  });
+  cloudEl.addEventListener('keydown', e => {
+    if(e.key !== 'Enter' && e.key !== ' ') return;
+    const t = e.target.closest('.kwtag');
+    if(t){ e.preventDefault(); toggleKw(t.dataset.k); }
+  });
+  activeEl.addEventListener('click', e => {
+    if(e.target.closest('button')){ kwFilter = null; render(); }
+  });
+  document.getElementById('filters').addEventListener('click', e => {
+    const b = e.target.closest('button[data-f]');
+    if(!b) return;
+    document.querySelectorAll('#filters button[data-f]').forEach(x => x.classList.toggle('on', x === b));
+    typeFilter = b.dataset.f;
+    render();
+  });
+
+  let rt, wasSmall = window.matchMedia('(max-width: 760px)').matches;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => {
+      const now = window.matchMedia('(max-width: 760px)').matches;
+      if(now !== wasSmall){ wasSmall = now; drawCloud(); render(); }
+    }, 200);
+  });
+
+  const nIntl = PUBS.filter(p => p.type === 'intl').length;
+  count.textContent = `국제학술지 ${nIntl}편, 국내학술지 ${PUBS.length - nIntl}편 — 총 ${PUBS.length}편`;
+  document.getElementById('kwn').textContent = PUBS.length;
+
+  drawCloud();
+  render();
+})();
+</script>
+</body>
+</html>

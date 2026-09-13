@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>연구 — iGDSL 지능형 공간데이터과학 연구실</title>
+<meta name="description" content="iGDSL의 여덟 가지 연구 분야 — 위성정보 산출, 시공간 변화 예측, 영상 품질 향상, 매칭·정합·추적, 변화탐지, 학습영상 생성, 무인기 활용, 위성 파운데이션 모델.">
+<link rel="icon" href="images/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="images/favicon-180.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site"></header>
+
+<section class="pagehead">
+  <div class="wrap">
+    <div class="eyebrow">Research</div>
+    <h1>연구 분야</h1>
+    <p>위성·무인기 데이터와 인공지능을 결합해 지구환경을 분석하고, 관측이 닿지 않는 시간과 공간의 빈틈을 채워 의사결정을 지원합니다.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="overview-frame" data-hotspots="">
+      <img width="1280" height="720" src="images/overview.jpg" alt="GeoAI로 읽는 지구 — 연구실 전체 연구 개요 다이어그램" loading="lazy">
+    </div>
+    <div class="overview-legend">
+      <a href="#s1"><span class="n">01</span>위성정보 산출</a>
+      <a href="#s2"><span class="n">02</span>시공간 변화 예측</a>
+      <a href="#s3"><span class="n">03</span>위성영상 품질 향상</a>
+      <a href="#s4"><span class="n">04</span>매칭·정합·이동 추적</a>
+      <a href="#s5"><span class="n">05</span>변화탐지</a>
+      <a href="#s6"><span class="n">06</span>학습영상 생성</a>
+      <a href="#s7"><span class="n">07</span>다종센서 무인기 활용</a>
+      <a href="#s8"><span class="n">08</span>위성 파운데이션 모델</a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-bottom:40px">
+  <div class="wrap">
+
+    <article class="item" id="s1">
+      <div class="copy">
+        <div class="num">01</div>
+        <h3>위성정보 산출</h3>
+        <p class="desc">위성이 관측한 신호를 지구환경 정보로 바꿉니다. 광학·SAR·수동마이크로파 관측자료를 GeoAI로 분류하고 물리량을 추정해 얼음과 바다를 구분하고, 해빙의 농도와 두께, 해양환경 정보를 산출합니다.</p>
+        <div class="tags"><span>위성 원시자료의 정보화</span><span>해빙·해양환경 모니터링</span></div>
+      </div>
+      <figure class="figure zoomable" data-zoom data-full="images/01-retrieval.jpg" data-title="위성정보 산출" data-desc="← → 키로 다른 그림 보기 · ESC 닫기"><img width="1280" height="531" src="images/crop/01-retrieval.jpg" alt="위성정보 산출 다이어그램: 광학·SAR·수동마이크로파 관측자료를 GeoAI로 분석해 얼음과 바다 구분, 해빙 농도·두께, 해양환경 정보를 산출" loading="lazy"></figure>
+    </article>
+
+    <article class="item rev" id="s2">
+      <div class="copy">
+        <div class="num">02</div>
+        <h3>시공간 변화 예측</h3>
+        <p class="desc">시간에 따른 변화를 학습해 미래의 공간 분포를 예측합니다. 해빙·해양·대기 등 다변량 시계열 자료로 변화 패턴을 학습하고, 해빙 분포를 예측해 북극항로의 항로 주변 위험 검토와 의사결정을 지원합니다.</p>
+        <div class="tags"><span>시계열 학습과 공간 분포 예측</span><span>해빙·해양환경 변화와 항로 활용</span></div>
+      </div>
+      <figure class="figure zoomable" data-zoom data-full="images/02-forecast.jpg" data-title="시공간 변화 예측" data-desc="← → 키로 다른 그림 보기 · ESC 닫기"><img width="1280" height="531" src="images/crop/02-forecast.jpg" alt="시공간 변화 예측 다이어그램: 과거 관측을 학습해 해빙 분포를 미래 예측하고 북극항로 의사결정을 지원" loading="lazy"></figure>
+    </article>
+
+    <article class="item" id="s3">
+      <div class="copy">
+        <div class="num">03</div>
+        <h3>위성영상 품질 향상</h3>
+        <p class="desc">비어 있는 정보를 복원하고 흐릿한 공간 구조를 선명하게 합니다. 구름으로 가려진 영역은 다른 시점의 관측으로 복원하고, 저해상도 영상은 GOCI-II 등 다중위성의 참조 공간정보를 활용해 세밀하게 초해상화합니다.</p>
+        <div class="tags"><span>결측복원</span><span>참조정보 기반 초해상화</span></div>
+      </div>
+      <figure class="figure zoomable" data-zoom data-full="images/03-enhancement.jpg" data-title="위성영상 품질 향상" data-desc="← → 키로 다른 그림 보기 · ESC 닫기"><img width="1280" height="531" src="images/crop/03-enhancement.jpg" alt="위성영상 품질 향상 다이어그램: 구름 가림 영역의 결측복원과 저해상도 영상의 초해상화" loading="lazy"></figure>
+    </article>
+
+    <article class="item rev" id="s4">
+      <div class="copy">
+        <div class="num">04</div>
+        <h3>매칭·정합·이동 추적</h3>
+        <p class="desc">서로 다른 영상 속 같은 대상을 찾아 위치와 움직임을 연결합니다. 광학·SAR처럼 서로 다른 센서의 영상을 같은 위치로 정밀 정합하고, 해빙의 이동을 시점 간 추적해 이동벡터 기반의 우회 항로를 판단합니다.</p>
+        <div class="tags"><span>센서 차이를 넘는 대응점 탐색</span><span>해빙 이동 추적과 항로 의사결정 지원</span></div>
+      </div>
+      <figure class="figure zoomable" data-zoom data-full="images/04-matching.jpg" data-title="매칭·정합·이동 추적" data-desc="← → 키로 다른 그림 보기 · ESC 닫기"><img width="1280" height="531" src="images/crop/04-matching.jpg" alt="매칭·정합·이동 추적 다이어그램: 이종센서 영상 정합과 해빙 이동 추적" loading="lazy"></figure>
+    </article>
+
+    <article class="item" id="s5">
+      <div class="copy">
+        <div class="num">05</div>
+        <h3>변화탐지</h3>
+        <p class="desc">같은 장소의 영상을 비교하여 달라진 지표와 건물을 찾아냅니다. 변화 전·후 영상에서 새로 생긴 건물과 사라진 건물을 자동으로 구분해, 도시 변화 모니터링과 지도 갱신을 지원합니다.</p>
+        <div class="tags"><span>다시점 촬영한 영상의 변화 비교</span><span>건물 변화탐지와 지도 갱신 지원</span></div>
+      </div>
+      <figure class="figure zoomable" data-zoom data-full="images/05-changedetect.jpg" data-title="변화탐지" data-desc="← → 키로 다른 그림 보기 · ESC 닫기"><img width="1280" height="531" src="images/crop/05-changedetect.jpg" alt="변화탐지 다이어그램: 변화 전·변화 후 영상을 비교해 신축·철거 건물을 탐지" loading="lazy"></figure>
+    </article>
+
+    <article class="item rev" id="s6">
+      <div class="copy">
+        <div class="num">06</div>
+        <h3>학습영상 생성</h3>
+        <p class="desc">변화 조건에 맞는 영상을 만들어 AI 학습데이터를 확장합니다. 신축·철거·갱신 등 변화 위치와 유형 조건은 유지한 채, 계절과 촬영 조건이 다른 영상을 생성형 GeoAI로 만들어 부족한 변화탐지 학습자료를 보완합니다.</p>
+        <div class="tags"><span>조건을 반영한 위성·항공영상 생성</span><span>부족한 변화탐지 학습자료 보완</span></div>
+      </div>
+      <figure class="figure zoomable" data-zoom data-full="images/06-generation.jpg" data-title="학습영상 생성" data-desc="← → 키로 다른 그림 보기 · ESC 닫기"><img width="1280" height="531" src="images/crop/06-generation.jpg" alt="학습영상 생성 다이어그램: 변화 위치·유형 조건을 유지한 채 계절이 다른 영상을 생성형 GeoAI로 생성" loading="lazy"></figure>
+    </article>
+
+    <article class="item" id="s7">
+      <div class="copy">
+        <div class="num">07</div>
+        <h3>다종센서 무인기 활용</h3>
+        <p class="desc">초분광과 LiDAR로 현장의 물질과 입체 구조를 살펴봅니다. 무인기로 정밀 관측한 초분광 영상의 물질별 빛 반사 특성과 LiDAR 점군의 높이·형상 정보를 결합해, 해안 쓰레기를 탐지하고 분광라이브러리를 구축합니다.</p>
+        <div class="tags"><span>초분광·LiDAR 관측정보 결합</span><span>현장 환경조사와 물질 특성 분석</span></div>
+      </div>
+      <figure class="figure zoomable" data-zoom data-full="images/07-uav.jpg" data-title="다종센서 무인기 활용" data-desc="← → 키로 다른 그림 보기 · ESC 닫기"><img width="1280" height="531" src="images/crop/07-uav.jpg" alt="다종센서 무인기 활용 다이어그램: 초분광 영상과 LiDAR 점군을 결합한 해안 쓰레기 탐지와 분광라이브러리 구축" loading="lazy"></figure>
+    </article>
+
+    <article class="item rev" id="s8">
+      <div class="copy">
+        <div class="num">08</div>
+        <h3>위성 파운데이션 모델</h3>
+        <p class="desc">공통 표현을 학습하고 다양한 분석·예측 과제에 재사용합니다. 위성·기후모델 등 다양한 지구관측 자료로 공통 표현을 사전학습한 뒤, 분류·예측·복원 등 과제별로 맞춤 학습해 해빙 모델과 후속 연구로 확장합니다.</p>
+        <div class="tags"><span>사전학습과 관측자료 적응</span><span>재사용 가능한 공간표현 연구</span></div>
+      </div>
+      <figure class="figure zoomable" data-zoom data-full="images/08-foundation.jpg" data-title="위성 파운데이션 모델" data-desc="← → 키로 다른 그림 보기 · ESC 닫기"><img width="1280" height="531" src="images/crop/08-foundation.jpg" alt="위성 파운데이션 모델 다이어그램: 다양한 지구관측 자료로 공통 표현을 사전학습하고 과제별로 맞춤 학습" loading="lazy"></figure>
+    </article>
+
+  </div>
+</section>
+
+<footer class="site"></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
