@@ -30,13 +30,14 @@ const NEWS = [
     { date: '7.4–7.11',   cat: 'conf',   text: 'XXV ISPRS Congress (캐나다 토론토) 참가 및 연구결과 발표',
       who: '지준화, 김보람, 김채은, 진동혁, 문기영' },
     { date: '7.1',        cat: 'award',  text: '문기영 석사우수장학금 선발 (한국장학재단)' },
+    { date: '7.1',        cat: 'member', text: '김경혜, 박유미 (응용수학과·빅데이터융합전공) iGDSL 합류 및 학부연구생 시작' },
     { date: '6.11–6.12',  cat: 'conf',   text: 'GeoAI데이터학회 춘계워크숍 (부산) 참가 및 연구결과 발표',
       who: '지준화, 김보람, 문기영' },
     { date: '6.11',       cat: 'conf',   text: '한국수로학회 춘계학술대회 (부산) 참가 및 연구결과 발표',
       who: '김채은' },
     { date: '3.1',        cat: 'member', text: '김채은 (데이터공학과) 박사과정 시작' },
     { date: '1.1–2.28',   cat: 'intern', text: '이원준 한국해양과학기술원 해양빅데이터·AI센터 동계인턴쉽' },
-    { date: '1.1',        cat: 'member', text: '변상현 학·석사연계과정 시작' }
+    { date: '1.1',        cat: 'member', text: '변상현 (빅데이터융합전공) 학·석사연계과정 시작' }
   ]
 },
 {
