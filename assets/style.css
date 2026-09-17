@@ -161,6 +161,7 @@ nav.mainnav a{
 }
 nav.mainnav a:hover{ background: var(--navy-pale); color: var(--navy); }
 nav.mainnav a.active{ background: var(--navy); color: #fff; }
+nav.mainnav a .ext{ font-size: 0.78em; margin-left: 4px; opacity: .65; vertical-align: 2px; }
 
 .navtoggle{
   display: none;
