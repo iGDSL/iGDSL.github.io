@@ -29,7 +29,6 @@ const RESEARCH_AREAS = [
 const NAV = [
   { href: 'index.html',        label: '홈' },
   { href: 'research.html',     label: '연구' },
-  { href: 'https://arctic-seaice.github.io/', label: '해빙 예보', ext: true },   /* 별도 사이트 */
   { href: 'people.html',       label: '구성원' },
   { href: 'publications.html', label: '논문' },
   { href: 'news.html',         label: '소식' },
@@ -70,9 +69,7 @@ const NAV = [
         <button class="navtoggle" aria-expanded="false" aria-controls="mainnav">☰ 메뉴</button>
         <nav class="mainnav" id="mainnav">
           ${NAV.map(n =>
-            `<a href="${n.href}"${n.href.toLowerCase() === here ? ' class="active" aria-current="page"' : ''}${
-              n.ext ? ' target="_blank" rel="noopener"' : ''}>${n.label}${
-              n.ext ? '<span class="ext" aria-hidden="true">↗</span>' : ''}</a>`
+            `<a href="${n.href}"${n.href.toLowerCase() === here ? ' class="active" aria-current="page"' : ''}>${n.label}</a>`
           ).join('')}
         </nav>
       </div>`;
