@@ -97,36 +97,15 @@ const NAV = [
     }).join(''));
   });
 
-  /* ---------- footer ---------- */
-  const footer = document.querySelector('footer.site');
-  if (footer) {
-    footer.innerHTML = `
-      <div class="wrap">
-        <div class="foot-grid">
-          <div>
-            <img class="flogo" src="images/logo-full.png" alt="iGDSL">
-            <div class="fmeta">
-              국립부경대학교 지능형 공간데이터과학 연구실<br>
-              위성·무인기 데이터와 인공지능을 결합해 지구환경을 분석하고 예측합니다.
-            </div>
-          </div>
-          <div class="flinks">
-            <a href="research.html">연구 소개</a>
-            <a href="people.html">구성원</a>
-            <a href="publications.html">논문</a>
-            <a href="gallery.html">갤러리</a>
-            <a href="contact.html">오시는 길</a>
-            <a href="mailto:jchi@pknu.ac.kr">jchi@pknu.ac.kr</a>
-          </div>
-        </div>
-        <div class="copyright">
-          © <span class="yr"></span> Intelligent Geospatial Data Science Lab,
-          Pukyong National University. 부산광역시 남구 용소로 45, 정보융합관(D16) 419호
-        </div>
-      </div>`;
-    const yr = footer.querySelector('.yr');
-    if (yr) yr.textContent = new Date().getFullYear();
-  }
+  /* ---------- footer ----------
+     푸터는 각 HTML 파일에 그대로 들어 있습니다. 검색엔진이 자바스크립트를
+     실행하지 않아도 페이지 간 링크를 따라갈 수 있게 하기 위해서입니다.
+     내용을 바꾸려면 7개 html 파일의 <footer class="site"> 블록을 함께 고치세요.
+     여기서는 연도만 현재 값으로 맞춥니다. */
+  document.querySelectorAll('footer.site .yr').forEach(el => {
+    el.textContent = new Date().getFullYear();
+  });
+
 })();
 
 

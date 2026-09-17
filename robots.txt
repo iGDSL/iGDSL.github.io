@@ -1,0 +1,5 @@
+# iGDSL — 국립부경대학교 지능형 공간데이터과학 연구실
+User-agent: *
+Allow: /
+
+Sitemap: https://igdsl.github.io/sitemap.xml
