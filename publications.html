@@ -262,7 +262,7 @@
   });
 
   const nIntl = PUBS.filter(p => p.type === 'intl').length;
-  count.textContent = `국제학술지 ${nIntl}편, 국내학술지 ${PUBS.length - nIntl}편 — 총 ${PUBS.length}편`;
+  count.textContent = `국제학술지(SCIE · Scopus) ${nIntl}편, 국내학술지 ${PUBS.length - nIntl}편 — 총 ${PUBS.length}편`;
   document.getElementById('kwn').textContent = PUBS.length;
 
   drawCloud();

@@ -9,7 +9,8 @@
                이미 쓰던 이름을 그대로 쓰면 같은 키워드로 묶입니다.
      venue   : 학술지명
      detail  : 권·호·페이지 (생략 가능)
-     type    : 'intl'(국제학술지) | 'dom'(국내학술지)
+     type    : 'intl'(국제학술지 — SCIE·Scopus 등재지) | 'dom'(국내학술지)
+               대한원격탐사학회지(Korean Journal of Remote Sensing)는 Scopus 등재지이므로 'intl' 입니다.
      doi     : 링크 URL (생략 가능)
    ========================================================= */
 
@@ -22,7 +23,7 @@ const PUBS = [
     detail: 'vol. 19, pp. 19772–19791',
     doi: 'https://doi.org/10.1109/JSTARS.2026.3700216' },
 
-  { year: 2025, type: 'dom',
+  { year: 2025, type: 'intl',
     authors: 'Mun, K.-Y., Kang, D., Chi, J.',
     title: 'Performance Comparison of Computer Vision and Deep Learning-Based Methods for Satellite Image Registration',
     kw: ['Image Registration', 'Deep Learning', 'Computer Vision', 'Satellite'],
@@ -42,19 +43,19 @@ const PUBS = [
     kw: ['Change Detection', 'Building', 'Benchmark Dataset', 'GeoAI', 'Satellite', 'Spatiotemporal'],
     venue: 'GEO DATA', detail: 'vol. 7, no. 3, pp. 216–229',
     doi: 'https://doi.org/10.22761/GD.2025.0010' },
-  { year: 2025, type: 'dom',
+  { year: 2025, type: 'intl',
     authors: '진경원, 김지홍, 지준화',
     title: 'Sentinel-2 위성 영상을 활용한 AutoML 기반 앙상블 모델의 낙동강 수질 지표 추정',
     kw: ['Water Quality', 'Machine Learning', 'Satellite'],
     venue: '대한원격탐사학회지', detail: 'vol. 41, no. 3, pp. 501–512',
     doi: 'https://doi.org/10.7780/kjrs.2025.41.3.1' },
-  { year: 2025, type: 'dom',
+  { year: 2025, type: 'intl',
     authors: '김보람, 도예빈, 지준화, 김태훈',
     title: 'UAV 영상의 GSD 변화에 따른 해안 쓰레기 인식 수준 평가',
     kw: ['UAV', 'Marine Debris', 'Object Detection', 'Deep Learning'],
     venue: '대한원격탐사학회지', detail: 'vol. 41, no. 2, pp. 327–339',
     doi: 'https://doi.org/10.7780/kjrs.2025.41.2.1.7' },
-  { year: 2025, type: 'dom',
+  { year: 2025, type: 'intl',
     authors: '김채은, 지준화',
     title: '시공간 기반 딥러닝 모델을 이용한 GOCI-II 클로로필-a 결측 자료 복원 연구',
     kw: ['GOCI-II', 'Chlorophyll-a', 'Gap-Filling', 'Deep Learning', 'Time Series', 'Spatiotemporal'],
@@ -100,13 +101,13 @@ const PUBS = [
     kw: ['UAV', 'Hyperspectral', 'Multi-Sensor', 'Calibration'],
     venue: 'Geoscience Data Journal', detail: 'vol. 9, pp. 221–234',
     doi: 'https://doi.org/10.1002/gdj3.133' },
-  { year: 2022, type: 'dom',
+  { year: 2022, type: 'intl',
     authors: '김철욱, 임평채, 지준화, 김태정, 이수암',
     title: '다중 센서 융합을 위한 무인항공기 물리 오프셋 검보정 방법',
     kw: ['UAV', 'Multi-Sensor', 'Calibration'],
     venue: '대한원격탐사학회지', detail: 'vol. 38, no. 6, pp. 1125–1139',
     doi: 'https://doi.org/10.7780/kjrs.2022.38.6.1.13' },
-  { year: 2022, type: 'dom',
+  { year: 2022, type: 'intl',
     authors: '지준화',
     title: 'Two-stream Convolutional Long- and Short-term Memory 모델의 2001-2021년 9월 북극 해빙 예측 성능 평가',
     kw: ['Sea Ice', 'Arctic', 'Prediction', 'Deep Learning', 'Time Series', 'Spatiotemporal'],
@@ -163,19 +164,19 @@ const PUBS = [
     venue: 'Remote Sensing of Environment', detail: 'vol. 231',
     doi: 'https://doi.org/10.1016/j.rse.2019.05.023' },
 
-  { year: 2018, type: 'dom',
+  { year: 2018, type: 'intl',
     authors: '지준화, 김현철',
     title: '광학영상에서의 해빙종류 분류 연구',
     kw: ['Sea Ice', 'Classification', 'Satellite'],
     venue: '대한원격탐사학회지', detail: 'vol. 34, no. 6-2, pp. 1239–1249',
     doi: 'https://doi.org/10.7780/kjrs.2018.34.6.2.8' },
-  { year: 2018, type: 'dom',
+  { year: 2018, type: 'intl',
     authors: '김현철, 한향선, 현창욱, 지준화, 손영선, 이성재',
     title: '극지 해빙 위성관측을 위한 분석 기술 개발',
     kw: ['Sea Ice', 'Arctic', 'Antarctic', 'Satellite'],
     venue: '대한원격탐사학회지', detail: 'vol. 34, no. 6-2, pp. 1283–1298',
     doi: 'https://doi.org/10.7780/kjrs.2018.34.6.2.12' },
-  { year: 2018, type: 'dom',
+  { year: 2018, type: 'intl',
     authors: 'Chi, J.',
     title: 'Vicarious Calibration-based Robust Spectrum Measurement for Spectral Libraries',
     kw: ['Spectral Library', 'Calibration', 'Hyperspectral'],
