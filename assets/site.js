@@ -28,8 +28,8 @@ const RESEARCH_AREAS = [
 
 const NAV = [
   { href: 'index.html',        label: '홈' },
-  { href: 'research.html',     label: '연구' },
   { href: 'people.html',       label: '구성원' },
+  { href: 'research.html',     label: '연구' },
   { href: 'publications.html', label: '논문' },
   { href: 'news.html',         label: '소식' },
   { href: 'gallery.html',      label: '갤러리' },
