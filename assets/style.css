@@ -1276,6 +1276,7 @@ ol.pubs .v{ color: var(--navy); font-style: italic; }
 .badge.conf  { background: var(--navy-pale); color: var(--navy); }  /* 학회 */
 .badge.intern{ background: #e2f2e7; color: #1d6b34; }  /* 인턴십 */
 .badge.member{ background: #ece9f6; color: #4a3f8f; }  /* 구성원 */
+.badge.act   { background: #fbe9ee; color: #9b2c4a; }  /* 활동 */
 
 /* ---------------- gallery ---------------- */
 .gal-grid{
