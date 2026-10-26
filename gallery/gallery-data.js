@@ -33,6 +33,13 @@
 
 const GALLERY = [
 
+  { file: '2026-ksrs-busan.jpg',    date: '2026.10.21',
+    title: '대한원격탐사학회 추계학술대회 (부산)',
+    desc: 'SpaceEye-T 영상 활용 경진대회에서 진동혁·문기영·변상현이 우수상을 받았습니다.',
+    album: '학회',
+    place: '파라다이스호텔 부산',
+    pos: 'center 64%' },
+
   { file: '2026-lab-dinner.jpg',    date: '2026.08.31',
     title: '연구실 회식',
     desc: '한 학기를 마무리하며 다 함께.',
