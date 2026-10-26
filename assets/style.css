@@ -1508,3 +1508,11 @@ footer.site .copyright{
 @media (max-width: 620px){
   .item .livelink .btn{ width: 100%; justify-content: center; }
 }
+
+/* ---------------- 이전 학부연구생: 들어온 해별로 이름만 ---------------- */
+.alumni-list.by-year li{ flex-wrap: nowrap; gap: 0 22px; }
+.alumni-list.by-year .per{
+  order: -1; margin-left: 0; flex: 0 0 4.2ch;
+  font-variant-numeric: tabular-nums;
+}
+.alumni-list.by-year .who{ font-weight: 600; }
